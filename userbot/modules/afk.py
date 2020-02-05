@@ -54,7 +54,7 @@ async def mention_afk(mention):
             if mention.sender_id not in USERS:
                 if AFKREASON:
                     await mention.reply(f"aepka gw gesss.\
-                        \nReason: `{AFKREASON}`")
+                        \nKarena `{AFKREASON}`")
                 else:
                     await mention.reply(str(choice(AFKSTR)))
                 USERS.update({mention.sender_id: 1})
@@ -93,7 +93,7 @@ async def afk_on_pm(sender):
             if sender.sender_id not in USERS:
                 if AFKREASON:
                     await sender.reply(f"aepka gw gesss.\
-                    \nReason: `{AFKREASON}`")
+                    \nKarena `{AFKREASON}`")
                 else:
                     await sender.reply(str(choice(AFKSTR)))
                 USERS.update({sender.sender_id: 1})
@@ -102,7 +102,7 @@ async def afk_on_pm(sender):
                 if USERS[sender.sender_id] % randint(2, 4) == 0:
                     if AFKREASON:
                         await sender.reply(f"bellom selesai njerrr.\
-                        \nReason: `{AFKREASON}`")
+                        \nKarena `{AFKREASON}`")
                     else:
                         await sender.reply(str(choice(AFKSTR)))
                     USERS[sender.sender_id] = USERS[sender.sender_id] + 1
@@ -121,10 +121,10 @@ async def set_afk(afk_e):
     global AFKREASON
     if string:
         AFKREASON = string
-        await afk_e.edit(f"Minggat AFK!\
-        \nReason: `{string}`")
+        await afk_e.edit(f"Minggatah\
+        \nKarena `{string}`")
     else:
-        await afk_e.edit("Minggat AFK!")
+        await afk_e.edit("Minggat ah")
     if BOTLOG:
         await afk_e.client.send_message(BOTLOG_CHATID, "#AFK\nYou went AFK!")
     ISAFK = True
@@ -142,6 +142,7 @@ async def type_afk_is_not_true(notafk):
         ISAFK = False
         await notafk.respond("ok dah beres.")
         await sleep(2)
+        
         if BOTLOG:
             await notafk.client.send_message(
                 BOTLOG_CHATID,
