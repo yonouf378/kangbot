@@ -1,7 +1,7 @@
 {
-  "name": "Telegram Open User Bot",
-  "description": "[OpenUserBot] A modular Telegram userbot running on Python 3.7+ with an sqlalchemy database.",
-  "logo": "https://telegra.ph/file/d04a1724c6dd8a957bd0e.png",
+  "name": "kangbot",
+  "description": "[kangbot] A modular Telegram userbot running on Python 3.7+ with an sqlalchemy database.",
+  "logo": "https://telegra.ph/file/eac95186a61cf962bb2d4.jpg",
   "keywords": [
     "telegram",
     "userbot",
@@ -11,7 +11,7 @@
   ],
   "repository": "https://github.com/vincreator/kangbot",
   "website": "https://telegra.ph/How-to-host-a-Telegram-Userbot-11-02",
-  "success_url": "https://t.me/PPE_Support",
+  "success_url": "https://t.me/userbotindo",
   "stack": "container",
   "env": {
     "API_KEY": {
