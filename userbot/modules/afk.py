@@ -141,8 +141,8 @@ async def type_afk_is_not_true(notafk):
     if ISAFK:
         ISAFK = False
         await notafk.respond("ok dah beres.")
-        await sleep(2)
-        
+        await sleep(3)
+        await 'client'.delete()
         if BOTLOG:
             await notafk.client.send_message(
                 BOTLOG_CHATID,
