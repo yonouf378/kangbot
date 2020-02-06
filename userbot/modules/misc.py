@@ -87,13 +87,13 @@ async def bot_community(community):
 async def bot_support(wannahelp):
     """ For .support command, just returns the group link. """
     await wannahelp.edit(
-        "Join Channel: @userbotindocloud \
-        \nJoin group : @userbotindo")
+        "Join group : @userbotindo \
+        \nJoin Channel: @userbotindocloud")
 
 
 @register(outgoing=True, pattern="^.creator$")
 async def creator(e):
-    await e.edit("[TeKnoways](https://t.me/oViNc)")
+    await e.edit("[XuGi](https://t.me/oViNc)")
 
 
 @register(outgoing=True, pattern="^.readme$")
