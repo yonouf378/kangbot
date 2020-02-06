@@ -78,22 +78,22 @@ async def killdabot(event):
 async def bot_community(community):
     """ For .community command, just returns OG Paperplane's group link. """
     await community.edit(
-        "Join RaphielGang's awesome userbot community: @userbot_support"
-        "\nDo note that Paperplane Extended is an unoficial fork of their "
-        "Paperplane project and it may get limited or no support for bugs.")
+        "userbotindo community: @userbotindo"
+        "\nDo note that kangbot is a kanged bot from anywhere "
+        "the kang project it may get limited or no support for bugs.")
 
 
 @register(outgoing=True, pattern="^.support$")
 async def bot_support(wannahelp):
     """ For .support command, just returns the group link. """
     await wannahelp.edit(
-        "Join the OpenUserBot Channel: @PaperPlaneExtended_news \
-        \nJoin the OpenUserBot Chat: @PPE_Support")
+        "Join Channel: @userbotindocloud \
+        \nJoin group : @userbotindo")
 
 
 @register(outgoing=True, pattern="^.creator$")
 async def creator(e):
-    await e.edit("[TeKnoways](https://t.me/Three_Cube_TeKnoways)")
+    await e.edit("[TeKnoways](https://t.me/oViNc)")
 
 
 @register(outgoing=True, pattern="^.readme$")
@@ -128,7 +128,7 @@ async def repeat(rep):
 async def repo_is_here(wannasee):
     """ For .repo command, just returns the repo URL. """
     await wannasee.edit(
-        "Click [here](https://github.com/mkaraniya/OpenUserBot) to open OpenUserBot's GitHub page."
+        "Click [here](https://github.com/vincreator/kangbot) to open kangbot's GitHub page."
     )
 
 
@@ -182,7 +182,7 @@ CMD_HELP.update(
 CMD_HELP.update({
     'community':
     ".community\
-\nUsage: Join the awesome Paperplane userbot community !!"
+\nUsage: Join userbotindo community !!"
 })
 
 CMD_HELP.update({
