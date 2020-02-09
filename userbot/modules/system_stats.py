@@ -125,12 +125,12 @@ async def amireallyalive(on):
     await on.edit("`• O N \n`"
                   "------------------------------------ \n"
                   "🤖여러분👋안녕하세요🤖 \n\n"
-                 f"`Telethon 💡: {version.__version__} `\n"
-                 f"`Python   🌀: {python_version()} `\n"
+                 f"`텔레 톤 💡: {version.__version__} `\n"
+                 f"`파이썬   🌀: {python_version()} `\n"
                   "------------------------------------ \n"
                  f"`내 이름🙋‍♂:`{DEFAULTUSER} \n"
                   "`내 사랑🍭:`[정은비](https://t.me/Namexon) \n"
-                  "`내 지원☕️:`[Support Group](https://t.me/userbotindo) \n"
+                  "`내 지원☕️:`[지원 그룹](https://t.me/userbotindo) \n"
                   "-------------------------------------")   
 
 
