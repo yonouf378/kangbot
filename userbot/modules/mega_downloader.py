@@ -31,15 +31,17 @@ from userbot.events import register
 
 
 def subprocess_run(cmd):
+    reply = ''
     subproc = Popen(cmd, stdout=PIPE, stderr=PIPE,
                     shell=True, universal_newlines=True)
     talk = subproc.communicate()
     exitCode = subproc.returncode
     if exitCode != 0:
-        print('An error was detected while running the subprocess:\n'
-              'exit code: %d\n'
-              'stdout: %s\n'
-              'stderr: %s' % (exitCode, talk[0], talk[1]))
+        reply += ('An error was detected while running the subprocess:\n'
+                  f'exit code: {exitCode}\n'
+                  f'stdout: {talk[0]}\n'
+                  f'stderr: {talk[1]}')
+        return reply
     return talk
 
 
@@ -87,8 +89,7 @@ def mega_download(url: str) -> str:
     if wget.download(file_url, out=file_name):
         encrypt_file(file_name, file_hex, file_raw_hex)
         reply += (f"`{file_name}`\n"
-                  f"Size: {file_size}\n"
-                  "\n"
+                  f"Size: {file_size}\n\n"
                   "Successfully downloaded...")
     else:
         reply += "Failed to download..."
@@ -96,10 +97,11 @@ def mega_download(url: str) -> str:
 
 
 def encrypt_file(file_name, file_hex, file_raw_hex):
-    os.rename(file_name, f"old_{file_name}")
-    cmd = f"cat old_{file_name} | openssl enc -d -aes-128-ctr -K {file_hex} -iv {file_raw_hex} > {file_name}"
+    os.rename(file_name, r"old_{}".format(file_name))
+    cmd = ("cat 'old_{}' | openssl enc -d -aes-128-ctr -K {} -iv {} > '{}'"
+           .format(file_name, file_hex, file_raw_hex, file_name))
     subprocess_run(cmd)
-    os.remove(f"old_{file_name}")
+    os.remove(r"old_{}".format(file_name))
     return
 
 
