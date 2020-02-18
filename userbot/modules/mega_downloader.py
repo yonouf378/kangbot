@@ -26,6 +26,8 @@ import json
 import wget
 import os
 
+from os.path import exists
+
 from userbot import CMD_HELP
 from userbot.events import register
 
@@ -77,7 +79,6 @@ def mega_download(url: str) -> str:
     result = subprocess_run(cmd)
     try:
         data = json.loads(result[0])
-        print(data)
     except json.JSONDecodeError:
         reply += "`Error: Can't extract the link`\n"
         return reply
@@ -86,13 +87,17 @@ def mega_download(url: str) -> str:
     file_url = data['url']
     file_hex = data['hex']
     file_raw_hex = data['raw_hex']
-    if wget.download(file_url, out=file_name):
-        encrypt_file(file_name, file_hex, file_raw_hex)
-        reply += (f"`{file_name}`\n"
-                  f"Size: {file_size}\n\n"
-                  "Successfully downloaded...")
-    else:
-        reply += "Failed to download..."
+    if exists(file_name):
+        os.remove(file_name)
+    if not exists(file_name):
+        wget.download(file_url, out=file_name)
+        if exists(file_name):
+            encrypt_file(file_name, file_hex, file_raw_hex)
+            reply += (f"`{file_name}`\n"
+                      f"Size: {file_size}\n\n"
+                      "Successfully downloaded...")
+        else:
+            reply += "Failed to download..."
     return reply
 
 
