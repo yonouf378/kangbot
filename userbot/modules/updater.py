@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 # credits to @AvinashReddy3108
 #
@@ -16,7 +16,7 @@ import sys
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
-from userbot import CMD_HELP, bot, HEROKU_APIKEY, HEROKU_APPNAME, UPSTREAM_REPO_URL
+from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, bot, HEROKU_API_KEY, HEROKU_APP_NAME, UPSTREAM_REPO_URL, HEROKU_MEMEZ
 from userbot.events import register
 
 requirements_path = path.join(
@@ -127,21 +127,21 @@ async def upstream(ups):
         await ups.edit(
             '`Force-Syncing to latest stable userbot code, please wait...`')
     else:
-        await ups.edit('`Updating kangbot, please wait....`')
+        await ups.edit('`Updating One4uBot, please wait....`')
     # We're in a Heroku Dyno, handle it's memez.
-    if HEROKU_APIKEY is not None:
+    if HEROKU_API_KEY is not None:
         import heroku3
-        heroku = heroku3.from_key(HEROKU_APIKEY)
+        heroku = heroku3.from_key(HEROKU_API_KEY)
         heroku_app = None
         heroku_applications = heroku.apps()
-        if not HEROKU_APPNAME:
+        if not HEROKU_APP_NAME:
             await ups.edit(
-                '`[HEROKU MEMEZ] Please set up the HEROKU_APPNAME variable to be able to update userbot.`'
+                '`[HEROKU MEMEZ] Please set up the HEROKU_APP_NAME variable to be able to update userbot.`'
             )
             repo.__del__()
             return
         for app in heroku_applications:
-            if app.name == HEROKU_APPNAME:
+            if app.name == HEROKU_APP_NAME:
                 heroku_app = app
                 break
         if heroku_app is None:
@@ -151,12 +151,12 @@ async def upstream(ups):
             repo.__del__()
             return
         await ups.edit('`[HEROKU MEMEZ]\
-                        \nkangbot dyno build in progress, please wait for it to complete.`'
+                        \nUserbot dyno build in progress, please wait for it to complete.`'
                        )
         ups_rem.fetch(ac_br)
         repo.git.reset("--hard", "FETCH_HEAD")
         heroku_git_url = heroku_app.git_url.replace(
-            "https://", "https://api:" + HEROKU_APIKEY + "@")
+            "https://", "https://api:" + HEROKU_API_KEY + "@")
         if "heroku" in repo.remotes:
             remote = repo.remote("heroku")
             remote.set_url(heroku_git_url)
@@ -179,6 +179,12 @@ async def upstream(ups):
         reqs_upgrade = await update_requirements()
         await ups.edit('`Successfully Updated!\n'
                        'Bot is restarting... Wait for a second!`')
+
+        if BOTLOG:
+            await ups.client.send_message(
+                BOTLOG_CHATID, "#UPDATE \n"
+                "Your One4uBot was successfully updated")
+
         # Spin a new instance of bot
         args = [sys.executable, "-m", "userbot"]
         execle(sys.executable, *args, environ)
@@ -187,8 +193,8 @@ async def upstream(ups):
 
 CMD_HELP.update({
     'update':
-    "update\
+    ".update\
 \nUsage: Checks if the main userbot repository has any updates and shows a changelog if so.\
 \n\n.update now\
 \nUsage: Updates your userbot, if there are any updates in the main userbot repository."
-}) 
+})
