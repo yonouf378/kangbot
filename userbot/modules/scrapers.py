@@ -24,7 +24,6 @@ from wikipedia.exceptions import DisambiguationError, PageError
 from urbandict import define
 from requests import get
 from search_engine_parser import GoogleSearch
-from google_images_download import google_images_download
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from googletrans import LANGUAGES, Translator
@@ -41,6 +40,7 @@ from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, YOUTUBE_API_KEY, CHROME_DRI
 from userbot.events import register
 from telethon.tl.types import DocumentAttributeAudio
 from userbot.modules.upload_download import progress, humanbytes, time_formatter
+from userbot.google_images_download import googleimagesdownload
 
 CARBONLANG = "auto"
 TTS_LANG = "en"
@@ -131,8 +131,8 @@ async def img_sampler(event):
         lim = lim.replace("lim=", "")
         query = query.replace("lim=" + lim[0], "")
     except IndexError:
-        lim = 3
-    response = google_images_download.googleimagesdownload()
+        lim = 6
+    response = googleimagesdownload()
 
     # creating list of arguments
     arguments = {
@@ -194,7 +194,7 @@ async def gsearch(q_event):
     gsearch = GoogleSearch()
     gresults = await gsearch.async_search(*search_args)
     msg = ""
-    for i in range(10):
+    for i in range(5):
         try:
             title = gresults["titles"][i]
             link = gresults["links"][i]
@@ -300,7 +300,7 @@ async def text_to_speech(query):
         return
 
     try:
-        gTTS(message, TTS_LANG)
+        gTTS(message, lang=TTS_LANG)
     except AssertionError:
         await query.edit(
             'The text is empty.\n'
@@ -313,13 +313,13 @@ async def text_to_speech(query):
     except RuntimeError:
         await query.edit('Error loading the languages dictionary.')
         return
-    tts = gTTS(message, TTS_LANG)
+    tts = gTTS(message, lang=TTS_LANG)
     tts.save("k.mp3")
     with open("k.mp3", "rb") as audio:
         linelist = list(audio)
         linecount = len(linelist)
     if linecount == 1:
-        tts = gTTS(message, TTS_LANG)
+        tts = gTTS(message, lang=TTS_LANG)
         tts.save("k.mp3")
     with open("k.mp3", "r"):
         await query.client.send_file(query.chat_id, "k.mp3", voice_note=True)
@@ -524,7 +524,7 @@ async def youtube_search(query,
         pageToken=token,
         order=order,
         part="id,snippet",
-        maxResults=10,
+        maxResults=5,
         location=location,
         locationRadius=location_radius).execute()
 
