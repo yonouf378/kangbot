@@ -17,7 +17,7 @@ import math
 
 from userbot import CMD_HELP, HEROKU_APP_NAME, HEROKU_API_KEY
 from userbot.events import register
-from userbot.utils.prettyjson import prettyjson
+from userbot.prettyjson import prettyjson
 
 Heroku = heroku3.from_key(HEROKU_API_KEY)
 heroku_api = "https://api.heroku.com"
