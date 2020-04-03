@@ -19,7 +19,7 @@ from userbot.events import register
 UNAPPROVED_MSG = (
     "`Anu gan... kalo mau pm ijin dullu kek.\n\n`"
     "`chat dan tag gw di group, bilang suruh check pm, beserta tujuan lu pm gw nya.`"
-    "`kalo mau tanya tentang perihal android di bahas di group aja kan bisa njir.\n\n`"
+    "`kalo mau tanya tentang perihal android di bahas di group aja kan bisa njir pa gunane group.\n\n`"
     "`lau kira gw call center lu ha?! gaji gw kagak juga lu!`")
 # =================================================================
 
