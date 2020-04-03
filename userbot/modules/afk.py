@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.c (the "License");
+# Licensed under the Raphielscape Public License, Version 1.d (the "License");
 # you may not use this file except in compliance with the License.
 #
 """ Userbot module which contains afk-related commands """
@@ -53,8 +53,8 @@ async def mention_afk(mention):
         if ISAFK:
             if mention.sender_id not in USERS:
                 if AFKREASON:
-                    await mention.reply(f"aepka gw gesss.\
-                        \nKarena `{AFKREASON}`")
+                    await mention.reply(f"I'm AFK right now.\
+                        \nReason: `{AFKREASON}`")
                 else:
                     await mention.reply(str(choice(AFKSTR)))
                 USERS.update({mention.sender_id: 1})
@@ -62,7 +62,7 @@ async def mention_afk(mention):
             elif mention.sender_id in USERS:
                 if USERS[mention.sender_id] % randint(2, 4) == 0:
                     if AFKREASON:
-                        await mention.reply(f"bellom selesai njerrr.\
+                        await mention.reply(f"I'm still AFK.\
                             \nReason: `{AFKREASON}`")
                     else:
                         await mention.reply(str(choice(AFKSTR)))
@@ -92,8 +92,8 @@ async def afk_on_pm(sender):
         if apprv and ISAFK:
             if sender.sender_id not in USERS:
                 if AFKREASON:
-                    await sender.reply(f"aepka gw gesss.\
-                    \nKarena `{AFKREASON}`")
+                    await sender.reply(f"I'm AFK right now.\
+                    \nReason: `{AFKREASON}`")
                 else:
                     await sender.reply(str(choice(AFKSTR)))
                 USERS.update({sender.sender_id: 1})
@@ -101,8 +101,8 @@ async def afk_on_pm(sender):
             elif apprv and sender.sender_id in USERS:
                 if USERS[sender.sender_id] % randint(2, 4) == 0:
                     if AFKREASON:
-                        await sender.reply(f"bellom selesai njerrr.\
-                        \nKarena `{AFKREASON}`")
+                        await sender.reply(f"I'm still AFK.\
+                        \nReason: `{AFKREASON}`")
                     else:
                         await sender.reply(str(choice(AFKSTR)))
                     USERS[sender.sender_id] = USERS[sender.sender_id] + 1
@@ -121,10 +121,10 @@ async def set_afk(afk_e):
     global AFKREASON
     if string:
         AFKREASON = string
-        await afk_e.edit(f"Minggat Ah!!\
-        \nKarena `{string}`")
+        await afk_e.edit(f"Going AFK!\
+        \nReason: `{string}`")
     else:
-        await afk_e.edit("Minggat Ah!!")
+        await afk_e.edit("Going AFK!")
     if BOTLOG:
         await afk_e.client.send_message(BOTLOG_CHATID, "#AFK\nYou went AFK!")
     ISAFK = True
@@ -140,9 +140,9 @@ async def type_afk_is_not_true(notafk):
     global AFKREASON
     if ISAFK:
         ISAFK = False
-        await notafk.respond("ok dah beres.")
-        await sleep(3)
-        await 'client'.delete()
+        msg = await notafk.respond("I'm no longer AFK.")
+        await sleep(1)
+        await msg.delete()
         if BOTLOG:
             await notafk.client.send_message(
                 BOTLOG_CHATID,
