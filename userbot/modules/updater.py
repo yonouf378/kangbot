@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.d (the "License");
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 # credits to @AvinashReddy3108
 #
@@ -15,7 +15,8 @@ import sys
 from git import Repo
 from git.exc import GitCommandError, InvalidGitRepositoryError, NoSuchPathError
 
-from userbot import (BOTLOG, BOTLOG_CHATID, CMD_HELP, HEROKU_API_KEY, HEROKU_APP_NAME, UPSTREAM_REPO_URL, UPSTREAM_REPO_BRANCH)
+from userbot import (CMD_HELP, HEROKU_API_KEY,
+                     HEROKU_APP_NAME, UPSTREAM_REPO_URL, UPSTREAM_REPO_BRANCH)
 from userbot.events import register
 
 requirements_path = path.join(
@@ -78,18 +79,12 @@ async def deploy(event, repo, ups_rem, ac_br, txt):
         else:
             remote = repo.create_remote("heroku", heroku_git_url)
         try:
-            remote.push(refspec="HEAD:refs/heads/sql-extended", force=True)
+            remote.push(refspec="HEAD:refs/heads/master", force=True)
         except GitCommandError as error:
             await event.edit(f'{txt}\n`Here is the error log:\n{error}`')
             return repo.__del__()
         await event.edit('`Successfully Updated!\n'
                          'Restarting, please wait...`')
-
-        if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID, "#UPDATE \n"
-                "Your One4uBot was successfully updated")
-
     else:
         await event.edit('`[HEROKU]:'
                          '\nPlease set up` **HEROKU_API_KEY** `variable.`'
@@ -105,12 +100,6 @@ async def update(event, repo, ups_rem, ac_br):
     await update_requirements()
     await event.edit('`Successfully Updated!\n'
                      'Bot is restarting... Wait for a second!`')
-
-    if BOTLOG:
-            await event.client.send_message(
-                BOTLOG_CHATID, "#UPDATE \n"
-                "Your One4uBot was successfully updated")
-
     # Spin a new instance of bot
     args = [sys.executable, "-m", "userbot"]
     execle(sys.executable, *args, environ)
@@ -144,9 +133,9 @@ async def upstream(event):
         origin = repo.create_remote('upstream', off_repo)
         origin.fetch()
         force_update = True
-        repo.create_head('sql-extended', origin.refs.sql-extended)
-        repo.heads.sql-extended.set_tracking_branch(origin.refs.sql-extended)
-        repo.heads.sql-extended.checkout(True)
+        repo.create_head('master', origin.refs.master)
+        repo.heads.master.set_tracking_branch(origin.refs.master)
+        repo.heads.master.checkout(True)
 
     ac_br = repo.active_branch.name
     if ac_br != UPSTREAM_REPO_BRANCH:
@@ -193,7 +182,7 @@ async def upstream(event):
         await event.edit(
             '`Force-Syncing to latest stable userbot code, please wait...`')
     else:
-        await event.edit('`Updating One4uBot, please wait....`')
+        await event.edit('`Updating userbot, please wait....`')
     if conf == "now":
         await update(event, repo, ups_rem, ac_br)
     elif conf == "deploy":
@@ -203,10 +192,10 @@ async def upstream(event):
 
 CMD_HELP.update({
     'update':
-    ".update"
+    ">`.update`"
     "\nUsage: Checks if the main userbot repository has any updates and shows a changelog if so."
-    "\n\n.update now"
+    "\n\n>`.update now`"
     "\nUsage: Update your userbot, if there are any updates in your userbot repository."
-    "\n\n.update deploy"
-    "\nUsage: Deploy your userbot at heroku, if there are any updates in your userbot repository."
+    "\n\n>`.update deploy`"
+    "\nUsage: Deploy your userbot, if there are any updates in your userbot repository."
 })
