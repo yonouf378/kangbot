@@ -294,7 +294,7 @@ async def download(gdrive, service, uri=None):
         )
     mimeType = await get_mimeType(required_file_name)
     try:
-        status = "[FILE - DOWNLOAD]"
+        status = "[FILE - UPLOAD]"
         if isfile(required_file_name):
             result = await upload(gdrive, service, required_file_name,
                                   file_name, mimeType)
@@ -647,8 +647,6 @@ async def google_drive(gdrive):
         uri = re.findall(r'\bhttps?://.*\.\S+', value)
         if "magnet:?" in value:
             uri = [value]
-        if uri and not gdrive.reply_to_msg_id:
-            return await download(gdrive, service, uri)
         if not uri and not gdrive.reply_to_msg_id:
             return await gdrive.edit(
                 "`[VALUE - ERROR]`\n\n"
@@ -657,6 +655,8 @@ async def google_drive(gdrive):
             )
     if not file_path and gdrive.reply_to_msg_id:
         return await download(gdrive, service)
+    if uri and not gdrive.reply_to_msg_id:
+        return await download(gdrive, service, uri)
     mimeType = await get_mimeType(file_path)
     file_name = await get_raw_name(file_path)
     viewURL, downloadURL = await upload(
@@ -786,8 +786,8 @@ async def check_progress_for_dl(gdrive, gid, previous):
             if " not found" in str(e) or "'file'" in str(e):
                 await gdrive.edit(
                      "`[URI - DOWNLOAD]`\n\n"
-                     f" • `Name   :` `{filename}`"
-                     " • `Status :` **OK**"
+                     f" • `Name   :` `{filename}`\n"
+                     " • `Status :` **OK**\n"
                      " • `Reason :` Download cancelled."
                 )
                 await asyncio.sleep(2.5)
@@ -796,7 +796,7 @@ async def check_progress_for_dl(gdrive, gid, previous):
                 file.remove(force=True)
                 await gdrive.edit(
                     "`[URI - DOWNLOAD]`\n\n"
-                    f" • `Name   :` `{filename}`"
+                    f" • `Name   :` `{filename}`\n"
                     " • `Status :` **BAD**\n"
                     " • `Reason :` Auto cancelled download, URI/Torrent dead."
                 )
