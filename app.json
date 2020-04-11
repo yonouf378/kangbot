@@ -9,7 +9,7 @@
     "modular",
     "productivity"
   ],
-  "repository": "https://github.com/vincreator/kangbot",
+  "repository": "https://github.com/MoveAngel/One4uBot",
   "website": "https://telegra.ph/How-to-host-a-Telegram-Userbot-11-02",
   "success_url": "https://t.me/userbotindo",
   "stack": "container",
@@ -39,8 +39,20 @@
       "description": "Add the Heroku app name here. It helps with userbot updates.",
       "required": false
     },
+    "GITHUB_ACCESS_TOKEN": {
+      "description": "Your GITHUB_ACCESS_TOKEN, get it from 'https://github.com/settings/tokens'",
+      "value": ""
+    },
+    "GIT_REPO_NAME": {
+      "description": "Add the GIT_REPO_NAME here. It helps with commit on GitHub.",
+      "required": false
+    },
     "UPSTREAM_REPO_URL": {
       "description": "In case you maintain a fork, add your repo URL here.",
+      "required": false
+    },
+    "UPSTREAM_REPO_BRANCH": {
+      "description": "In case you maintain a fork, add your repo BRANCH here.",
       "required": false
     },
     "COUNTRY": {
@@ -51,6 +63,11 @@
       "description": "Change this value in case your country has multiple Time Zones.",
       "value": "1",
       "required": false
+    },
+    "TELEGRAPH_SHORT_NAME": {
+      "description": "Fill the value up to you.",
+      "value": "Userbot",
+      "required": true
     },
     "CHROME_DRIVER": {
       "description": "ChromeDriver location for selenium based modules.",
@@ -64,6 +81,10 @@
     },
     "OPEN_WEATHER_MAP_APPID": {
       "description": "Get your own APPID (API key)from https://api.openweathermap.org/data/2.5/weather",
+      "required": false
+    },
+    "GENIUS_API_TOKEN": {
+      "description": "Get your own api token from https://genius.com/developers",
       "required": false
     },
     "BOTLOG": {
@@ -106,6 +127,14 @@
       "description": "Download location for many modules (GDrive, .download etc..)",
       "value": "./downloads/"
     },
+    "USER_TERM_ALIAS": {
+      "description": "Set alias name of user for term bash command",
+      "required": false
+    },
+    "QUOTES_API_TOKEN": {
+      "description": "Enhance ur text to sticker. Get your own API token from http://antiddos.systems.",
+      "required": false
+    },
     "CLEAN_WELCOME": {
       "description": "When a new person joins, the old welcome message is deleted.",
       "value": "True"
@@ -136,7 +165,7 @@
     },
     "DEFAULT_BIO": {
       "description": "Default profile bio.",
-      "value": "[PM = Report Spam] I ❤ ️@OpenUserBot",
+      "value": "[PM = Report Spam] I ❤ ️One4uBot",
       "required": false
     },
     "ALIVE_NAME": {
@@ -159,22 +188,9 @@
       "description": "Set the default city for the userbot's weather module.",
       "required": false
     },
-    "GENIUS_CLIENT_ID": {
-      "description": "Put your Genius id,create ☕️ = https://genius.com/api-clients.",
-      "required": false
-    },
-    "GENIUS_CLIENT_SECRET": {
-      "description": "Enter your Genius client secret.",
-      "required": false
-    },
-    "GENIUS_CLIENT_TOKEN": {
-      "description": "Enter your Genius client token.",
-      "required": false
-    },
     "LOGSPAMMER": {
       "description": "Set this to True in case you want the error logs to be stored in the userbot log group, instead of spitting out the file in the current chat, requires a valid BOTLOG_CHATID to be set.",
       "value": "True"
-
     }
   },
   "addons": [
