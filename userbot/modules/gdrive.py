@@ -1,135 +1,3 @@
-# Copyright (C) 2019 Adek Maulana
-#
-# Ported and add more features from my script inside build-kernel.py
-""" - ProjectBish Google Drive managers - """
-import os
-import pickle
-import codecs
-import asyncio
-import math
-import time
-import re
-import binascii
-from os.path import isfile, isdir, join
-from mimetypes import guess_type
-
-from telethon import events
-
-from google_auth_oauthlib.flow import InstalledAppFlow
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google.auth.transport.requests import Request
-from googleapiclient.http import MediaFileUpload
-
-from userbot import (G_DRIVE_CLIENT_ID, G_DRIVE_CLIENT_SECRET,
-                     G_DRIVE_AUTH_TOKEN_DATA, BOTLOG_CHATID,
-                     TEMP_DOWNLOAD_DIRECTORY, CMD_HELP, LOGS,
-                     G_DRIVE_FOLDER_ID)
-from userbot.events import register
-from userbot.modules.upload_download import humanbytes, time_formatter
-from userbot.modules.aria import aria2, check_metadata
-# =========================================================== #
-#                          STATIC                             #
-# =========================================================== #
-GOOGLE_AUTH_URI = "https://accounts.google.com/o/oauth2/auth"
-GOOGLE_TOKEN_URI = "https://oauth2.googleapis.com/token"
-SCOPES = [
-    "https://www.googleapis.com/auth/drive",
-    "https://www.googleapis.com/auth/drive.metadata"
-]
-REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
-# =========================================================== #
-#      STATIC CASE FOR G_DRIVE_FOLDER_ID IF VALUE IS URL      #
-# =========================================================== #
-__ = G_DRIVE_FOLDER_ID
-if __ is not None:
-    if "uc?id=" in G_DRIVE_FOLDER_ID:
-        LOGS.info(
-            "G_DRIVE_FOLDER_ID is not a valid folderURL...")
-        G_DRIVE_FOLDER_ID = None
-    try:
-        G_DRIVE_FOLDER_ID = __.split("folders/")[1]
-    except IndexError:
-        try:
-            G_DRIVE_FOLDER_ID = __.split("open?id=")[1]
-        except IndexError:
-            try:
-                if "/view" in __:
-                    G_DRIVE_FOLDER_ID = __.split("/")[-2]
-            except IndexError:
-                try:
-                    G_DRIVE_FOLDER_ID = __.split(
-                                      "folderview?id=")[1]
-                except IndexError:
-                    if any(map(str.isdigit, __)):
-                        _1 = True
-                    else:
-                        _1 = False
-                    if "-" in __ or "_" in __:
-                        _2 = True
-                    else:
-                        _2 = False
-                    if True in [_1 or _2]:
-                        pass
-                    else:
-                        LOGS.info(
-                           "G_DRIVE_FOLDER_ID not valid...")
-                        G_DRIVE_FOLDER_ID = None
-# =========================================================== #
-#                                                             #
-# =========================================================== #
-
-
-async def progress(current, total, gdrive, start, type_of_ps, file_name=None):
-    """Generic progress_callback for uploads and downloads."""
-    now = time.time()
-    diff = now - start
-    if round(diff % 10.00) == 0 or current == total:
-        percentage = current * 100 / total
-        speed = current / diff
-        elapsed_time = round(diff) * 1000
-        time_to_completion = round((total - current) / speed) * 1000
-        estimated_total_time = elapsed_time + time_to_completion
-        progress_str = "`Downloading...` | [{0}{1}] `{2}%`\n".format(
-            ''.join(["#" for i in range(math.floor(percentage / 10))]),
-            ''.join(["**-**" for i in range(10 - math.floor(percentage / 10))]),
-            round(percentage, 2))
-        tmp = (progress_str + "\n" +
-               f"{humanbytes(current)} of {humanbytes(total)}\n"
-               f"ETA: {time_formatter(estimated_total_time)}"
-               )
-        if file_name:
-            await gdrive.edit(f"{type_of_ps}\n\n"
-                              f" • `Name   :` `{file_name}`"
-                              f" • `Status :`\n    {tmp}")
-        else:
-            await gdrive.edit(f"{type_of_ps}\n\n"
-                              f" • `Status :`\n    {tmp}")
-
-
-async def generate_credentials(gdrive):
-    """ - Generate credentials - """
-    error_msg = (
-        "`[TOKEN - ERROR]`\n\n"
-        " • `Status :` **RISK**\n"
-        " • `Reason :` There is data corruption or a security violation.\n\n"
-        "`It's probably your` **G_DRIVE_TOKEN_DATA** `is not match\n"
-        "Or you still use the old gdrive module token data!.\n"
-        "Please change it, by deleting` **G_DRIVE_TOKEN_DATA** "
-        "`from your ConfigVars and regenerate the token and put it again`."
-    )
-    configs = {
-        "installed": {
-            "client_id": G_DRIVE_CLIENT_ID,
-            "client_secret": G_DRIVE_CLIENT_SECRET,
-            "auth_uri": GOOGLE_AUTH_URI,
-            "token_uri": GOOGLE_TOKEN_URI,
-        }
-    }
-    creds = None
-    try:
-        if G_DRIVE_AUTH_TOKEN_DATA is not None:
-            """ - Repack credential objects from strings - """
             try:
                 creds = pickle.loads(
                       codecs.decode(G_DRIVE_AUTH_TOKEN_DATA.encode(), "base64"))
@@ -266,6 +134,7 @@ async def download(gdrive, service, uri=None):
         gid = downloads.gid
         await check_progress_for_dl(gdrive, gid, previous=None)
         file = aria2.get_download(gid)
+        filename = file.name
         if file.followed_by_ids:
             new_gid = await check_metadata(gid)
             await check_progress_for_dl(gdrive, new_gid, previous=None)
@@ -758,7 +627,10 @@ async def check_progress_for_dl(gdrive, gid, previous):
     while not complete:
         file = aria2.get_download(gid)
         complete = file.is_complete
-        filename = file.name
+        try:
+            filename = file.name
+        except IndexError:
+            pass
         try:
             if not complete and not file.error_message:
                 msg = (
@@ -784,22 +656,28 @@ async def check_progress_for_dl(gdrive, gid, previous):
                                          "Successfully downloaded...")
         except Exception as e:
             if " not found" in str(e) or "'file'" in str(e):
-                await gdrive.edit(
-                     "`[URI - DOWNLOAD]`\n\n"
-                     f" • `Name   :` `{filename}`\n"
-                     " • `Status :` **OK**\n"
-                     " • `Reason :` Download cancelled."
-                )
+                try:
+                    await gdrive.edit(
+                         "`[URI - DOWNLOAD]`\n\n"
+                         f" • `Name   :` `{filename}`\n"
+                         " • `Status :` **OK**\n"
+                         " • `Reason :` Download cancelled."
+                    )
+                except Exception:
+                    pass
                 await asyncio.sleep(2.5)
                 return await gdrive.delete()
             elif " depth exceeded" in str(e):
                 file.remove(force=True)
-                await gdrive.edit(
-                    "`[URI - DOWNLOAD]`\n\n"
-                    f" • `Name   :` `{filename}`\n"
-                    " • `Status :` **BAD**\n"
-                    " • `Reason :` Auto cancelled download, URI/Torrent dead."
-                )
+                try:
+                    await gdrive.edit(
+                        "`[URI - DOWNLOAD]`\n\n"
+                        f" • `Name   :` `{filename}`\n"
+                        " • `Status :` **BAD**\n"
+                        " • `Reason :` Auto cancelled download, URI/Torrent dead."
+                    )
+                except Exception:
+                    pass
 
 
 CMD_HELP.update({
