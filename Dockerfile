@@ -68,10 +68,6 @@ RUN git clone -b sql-extended https://github.com/vincreator/kangbot /root/userbo
 RUN mkdir /root/userbot/bin/
 WORKDIR /root/userbot/
 
-#
-# Copies session and config (if it exists)
-#
-COPY ./sample_config.env ./userbot.session* ./config.env* /root/userbot/
 
 #
 # Install requirements
