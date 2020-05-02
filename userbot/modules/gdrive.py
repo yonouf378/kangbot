@@ -25,7 +25,7 @@ import time
 import re
 import logging
 
-import userbot.modules.sql_helper.google_drive_sql as helper
+import userbot.modules.sql_helper.gdrive_sql as helper
 
 from userbot.modules.sql_helper import delete_table
 from os.path import isfile, isdir, join
