@@ -1,6 +1,6 @@
 # Copyright (C) 2019 The Raphielscape Company LLC.
 #
-# Licensed under the Raphielscape Public License, Version 1.d (the "License");
+# Licensed under the Raphielscape Public License, Version 1.c (the "License");
 # you may not use this file except in compliance with the License.
 #
 
@@ -14,10 +14,10 @@ from sys import setrecursionlimit
 from telethon.errors import AboutTooLongError
 from telethon.tl.functions.account import UpdateProfileRequest
 from telethon.tl.functions.users import GetFullUserRequest
-from telethon.tl.types import User as Userbot
 from telethon.errors.rpcerrorlist import FloodWaitError
 
-from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, DEFAULT_BIO, BIO_PREFIX, lastfm, LASTFM_USERNAME, bot
+from userbot import (CMD_HELP, BOTLOG, BOTLOG_CHATID, DEFAULT_BIO,
+                     BIO_PREFIX, lastfm, LASTFM_USERNAME, bot)
 from userbot.events import register
 
 # =================== CONSTANT ===================
@@ -48,7 +48,7 @@ LastLog = False
 @register(outgoing=True, pattern="^.lastfm$")
 async def last_fm(lastFM):
     """ For .lastfm command, fetch scrobble data from last.fm. """
-    await lastFM.edit("Processing...")
+    await lastFM.edit("`Processing...`")
     preview = None
     playing = User(LASTFM_USERNAME, lastfm).get_now_playing()
     username = f"https://www.last.fm/user/{LASTFM_USERNAME}"
@@ -60,14 +60,16 @@ async def last_fm(lastFM):
             image = None
             pass
         tags = await gettags(isNowPlaying=True, playing=playing)
-        rectrack = parse.quote_plus(f"{playing}")
+        rectrack = parse.quote(f"{playing}")
         rectrack = sub("^", "https://open.spotify.com/search/",
                        rectrack)
         if image:
-            output = f"[‎]({image})[{LASTFM_USERNAME}]({username}) __is now listening to:__\n\n• [{playing}]({rectrack})\n`{tags}`"
+            output = (f"[‎]({image})[{LASTFM_USERNAME}]({username}) __is now listening to:"
+                      f"__\n\n• [{playing}]({rectrack})\n`{tags}`")
             preview = True
         else:
-            output = f"[{LASTFM_USERNAME}]({username}) __is now listening to:__\n\n• [{playing}]({rectrack})\n`{tags}`"
+            output = (f"[{LASTFM_USERNAME}]({username}) __is now listening to:"
+                      f"__\n\n• [{playing}]({rectrack})\n`{tags}`")
     else:
         recent = User(LASTFM_USERNAME, lastfm).get_recent_tracks(limit=3)
         playing = User(LASTFM_USERNAME, lastfm).get_now_playing()
@@ -76,7 +78,7 @@ async def last_fm(lastFM):
             print(i)
             printable = await artist_and_song(track)
             tags = await gettags(track)
-            rectrack = parse.quote_plus(str(printable))
+            rectrack = parse.quote(str(printable))
             rectrack = sub("^",
                            "https://open.spotify.com/search/",
                            rectrack)
@@ -217,11 +219,11 @@ async def lastlog(lstlog):
 
 
 CMD_HELP.update({
-    'lastfm':
-    ".lastfm\
-    \nUsage: Shows currently scrobbling track or most recent scrobbles if nothing is playing.\
-    \n\nlastbio: .lastbio <on/off>\
-    \nUsage: Enables/Disables last.fm current playing to bio.\
-    \n\nlastlog: .lastlog <on/off>\
-    \nUsage: Enable/Disable last.fm bio logging in the bot-log group."
+    "lastfm":
+    ">`.lastfm`"
+    "\nUsage: Shows currently scrobbling track or most recent scrobbles if nothing is playing."
+    "\n\n>`.lastbio <on/off>`"
+    "\nUsage: Enables/Disables last.fm current playing to bio."
+    "\n\n>`.lastlog <on/off>`"
+    "\nUsage: Enable/Disable last.fm bio logging in the bot-log group."
 })
