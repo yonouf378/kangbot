@@ -26,11 +26,7 @@ except PhoneNumberInvalidError:
 for module_name in ALL_MODULES:
     imported_module = import_module("userbot.modules." + module_name)
 
-LOGS.info("You are running kangbot [v2.O]")
-
-LOGS.info(
-    "Congratulations, your userbot is now running !! Test it by typing .on in any chat."
-    "If you need assistance, head to https://t.me/userbotindo")
+LOGS.info("You are running ProjectBish UserBot version: [1.beta.4]")
 
 if len(argv) not in (1, 3, 4):
     bot.disconnect()
